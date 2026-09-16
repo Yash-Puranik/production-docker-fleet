@@ -1,24 +1,37 @@
-# Production Docker Fleet
 
-Hardened, multi-runtime container templates and CI/CD pipelines engineered for production environments. Focuses on minimal attack surfaces, unprivileged process isolation, and automated cache-optimized builds.
 
----
+# DevOps Production Fleet 🚀
 
-## Fleet Specifications
+[![Fleet CI](https://github.com/Yash-Puranik/production-docker-fleet/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash-Puranik/production-docker-fleet/actions/workflows/ci.yml)
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-node--service-blue?logo=docker&logoColor=white)](https://hub.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-| Service | Runtime | Base Image | Security Context | Target Port | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **node-service** | Node.js 20 | `alpine` | Non-root (`UID 1000:node`) | `3000` | Operational |
-| **python-service** | Python 3.12 | `slim/alpine` | Non-root | `8000` | Roadmap |
-| **go-service** | Go 1.22 | `scratch` | Unprivileged binary | `8080` | Roadmap |
+Hardened Node.js status monitoring service and automated GitHub Actions CI/CD infrastructure designed for container security, low footprint, and automated delivery.
 
 ---
 
-## Architectural Standards
+## 📌 Architecture Overview
 
-* **Multi-Stage Builds:** Separates compile/build dependencies from execution artifacts to minimize final image footprint.
-* **Non-Root Execution:** Explicit runtime users (`USER node`) eliminate container breakout vulnerabilities tied to root access.
-* **Network Binding:** Binds explicitly to `0.0.0.0` to ensure proper routing across Docker internal bridge networks and reverse proxies.
-* **Automated CI Plumbing:** GitHub Actions pipeline validates Docker layer construction and utilizes GitHub Actions Cache (`type=gha`) for fast builds.
+* **Node Service Monitor (`services/node-service/`):** Express runtime serving an interactive frontend dashboard (`/`) and structured runtime diagnostics (`/health`).
+* **Container Security:** Multi-stage build on Alpine Linux (`node:20-alpine`) executing under non-root system user `USER node`.
+* **Host Interface Binding:** Bound explicitly to `0.0.0.0:3000` to ensure seamless WSL2, Docker Desktop, and host port forwarding.
+* **Automated CI/CD:** Single-runner Ubuntu GitHub Action using Docker Buildx caching (`type=gha`), verifying builds on feature branches/PRs (`push: false`), and shipping to Docker Hub on merge to `main` (`push: true`).
 
 ---
+
+## 📂 Repository Structure
+
+```text
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # Single-runner Ubuntu build & delivery pipeline
+├── services/
+│   └── node-service/
+│       ├── Dockerfile          # Hardened rootless Alpine container
+│       ├── package.json        # Dependencies & start script
+│       ├── package-lock.json
+│       └── server.js           # Live monitor dashboard & diagnostics endpoint
+├── .gitignore
+├── LICENSE
+└── README.md
