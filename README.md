@@ -1,24 +1,34 @@
-# Production Docker Fleet
+# DevOps Production Fleet 🚀
 
-Hardened, multi-runtime container templates and CI/CD pipelines engineered for production environments. Focuses on minimal attack surfaces, unprivileged process isolation, and automated cache-optimized builds.
+[![Fleet CI](https://github.com/Yash-Puranik/production-docker-fleet/actions/workflows/ci.yml/badge.svg)](https://github.com/Yash-Puranik/production-docker-fleet/actions/workflows/ci.yml)
+[![Docker Hub](https://img.shields.io/badge/Docker%20Hub-node--service-blue?logo=docker&logoColor=white)](https://hub.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
----
-
-## Fleet Specifications
-
-| Service | Runtime | Base Image | Security Context | Target Port | Status |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **node-service** | Node.js 20 | `alpine` | Non-root (`UID 1000:node`) | `3000` | Operational |
-| **python-service** | Python 3.12 | `slim/alpine` | Non-root | `8000` | Roadmap |
-| **go-service** | Go 1.22 | `scratch` | Unprivileged binary | `8080` | Roadmap |
+Production-grade microservice monorepo and CI/CD infrastructure boilerplate designed for lean container security, automated CI testing, and conditional registry distribution.
 
 ---
 
-## Architectural Standards
+## 📌 Fleet Architecture
 
-* **Multi-Stage Builds:** Separates compile/build dependencies from execution artifacts to minimize final image footprint.
-* **Non-Root Execution:** Explicit runtime users (`USER node`) eliminate container breakout vulnerabilities tied to root access.
-* **Network Binding:** Binds explicitly to `0.0.0.0` to ensure proper routing across Docker internal bridge networks and reverse proxies.
-* **Automated CI Plumbing:** GitHub Actions pipeline validates Docker layer construction and utilizes GitHub Actions Cache (`type=gha`) for fast builds.
+* **Service Core (`services/node-service/`):** Express.js runtime exposing an interactive live HTML status monitor (`/`) and structured JSON diagnostic metrics (`/health`).
+* **Container Hardening:** Minimal Alpine base (`node:20-alpine`), rootless execution via system user `USER node`, and host interface binding on `0.0.0.0:3000`.
+* **CI/CD Pipeline:** Single-runner Ubuntu GitHub Action executing Docker Buildx caching (`type=gha`), running validation builds on PRs (`push: false`), and shipping tested images to Docker Hub on merge to `main` (`push: true`).
+* **Monorepo Expansion Ready:** Isolated directory structure under `services/` designed to plug in future microservices (e.g., Go/Python data workers) into the same fleet runner.
 
 ---
+
+## 📂 Repository Structure
+
+```text
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml              # Ubuntu CI/CD pipeline (Buildx + Hub push)
+├── services/
+│   └── node-service/
+│       ├── Dockerfile          # Hardened non-root Alpine container
+│       ├── package.json        # Service manifest & dependencies
+│       ├── package-lock.json
+│       └── server.js           # Express monitor dashboard & health endpoint
+├── .gitignore
+└── README.md

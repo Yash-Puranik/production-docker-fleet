@@ -1,0 +1,22 @@
+### 2. `.gitignore`
+
+Make sure temporary development files and local Node artifacts are ignored:
+
+```gitignore
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# Environment
+.env
+.env.*
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Docker build caches
+*.local
