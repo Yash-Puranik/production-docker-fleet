@@ -1,0 +1,23 @@
+name: Fleet CI
+on:
+push:
+branches:["main"]
+pull_request:
+branches:["main"]
+jobs:
+build-node:
+runs-on:ubuntu-latest 
+steps:
+name:Checkout repository
+uses:actions/checkout@v4
+name:Set up Docker BuildX
+uses:docker/setup-buildx-action@v3
+name:Build Node Service
+uses:docker/build-push-action@v5
+with:
+context: ./services/node-service
+file: ./services/node-service/Dockerfile
+push: false
+tags: node-service:latest
+cache-from:type=gha
+cache-to: type=gha,mode=max

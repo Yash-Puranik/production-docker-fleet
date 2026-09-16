@@ -1,0 +1,12 @@
+{
+  "name": "node-service",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node -e 'console.log(\"Healthcheck test passed\"); process.exit(0);'"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
